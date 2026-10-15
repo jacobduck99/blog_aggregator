@@ -12,23 +12,36 @@ function getConfigFilePath(): string{
     return path.join(homeDir, '.gatorconfig.json');
 }
 
-const getPath = getConfigFilePath();
+function writeConfig(cfg: Config): void{
+    const path = getConfigFilePath()
+    const jsonString = JSON.stringify(cfg);
+    const write = fs.writeFileSync(path ,jsonString, 'utf8')
+    console.log("write config", jsonString);  
+}
 
-console.log("here's path", getPath);
-// function writeConfig(cfg: Config): void{
-//     fs.writeFileSync(getPath ,cfg,)
+// function validateConfig(rawConfig: any): Config{
+//
 // }
 
-export function setUser(currentUserName: string): void{
-    const jsonString = JSON.stringify(currentUserName);
-    const writeFile = fs.writeFileSync(getPath, jsonString);    
-}
+
+
+// export function setUser(currentUserName: string): void{
+//     const getFile = readConfig(getPath);
+//     // const userNameString = `current_user_name: ${currentUserName}`;
+//     const jsonString = JSON.stringify(userNameString);
+//     const writeFile = fs.writeFileSync(getPath, jsonString, { flag: 'a'});    
+// }
 
 export function readConfig(filePath: string){
     const readFile = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(readFile);
-    console.log("here's file", data);
+    console.log("here's file", data);  
 }
 
-setUser("jacob");
+const getPath = getConfigFilePath()
+
+// readConfig(getPath);
+const activeConfig: Config = { dbUrl: getPath, currentUserName: "jacob" };
+writeConfig(activeConfig);
 readConfig(getPath);
+// setUser("jacob");
