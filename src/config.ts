@@ -12,36 +12,28 @@ function getConfigFilePath(): string{
     return path.join(homeDir, '.gatorconfig.json');
 }
 
-function writeConfig(cfg: Config): void{
-    const path = getConfigFilePath()
-    const jsonString = JSON.stringify(cfg);
-    const write = fs.writeFileSync(path ,jsonString, 'utf8')
-    console.log("write config", jsonString);  
+export function setUser(currentUserName: string): void{
+    const userName = currentUserName;
+    const current = readConfig();
+    const updated: Config = {
+      dbUrl: current.dbUrl,
+      currentUserName: currentUserName,
+    };
+    const toWrite = {
+      db_url: updated.dbUrl,
+      current_user_name: updated.currentUserName,
+    };
+    const jsonString = JSON.stringify(toWrite);
+    const writeFile = fs.writeFileSync(getConfigFilePath(), jsonString);   
 }
 
-// function validateConfig(rawConfig: any): Config{
-//
-// }
-
-
-
-// export function setUser(currentUserName: string): void{
-//     const getFile = readConfig(getPath);
-//     // const userNameString = `current_user_name: ${currentUserName}`;
-//     const jsonString = JSON.stringify(userNameString);
-//     const writeFile = fs.writeFileSync(getPath, jsonString, { flag: 'a'});    
-// }
-
-export function readConfig(filePath: string){
-    const readFile = fs.readFileSync(filePath, 'utf8');
-    const data = JSON.parse(readFile);
-    console.log("here's file", data);  
+export function readConfig(): Config{
+    const readFile = fs.readFileSync(getConfigFilePath(), 'utf8');
+    const raw = JSON.parse(readFile);
+    return {
+    dbUrl: raw.db_url,
+    currentUserName: raw.current_user_name,
+};
 }
 
-const getPath = getConfigFilePath()
 
-// readConfig(getPath);
-const activeConfig: Config = { dbUrl: getPath, currentUserName: "jacob" };
-writeConfig(activeConfig);
-readConfig(getPath);
-// setUser("jacob");
