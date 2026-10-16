@@ -21,7 +21,7 @@ export async function registerCommand(registry: CommandsRegistry, cmdName: strin
 export async function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]){
    if (cmdName in registry){
         const fn = registry[cmdName]
-        fn(cmdName, ...args); 
+        await fn(cmdName, ...args); 
     }else {
         throw new Error("Command doesn't exist in look up table");
     } 
