@@ -7,6 +7,7 @@ function main() {
     const commandRegistry: CommandsRegistry = {};
     registerCommand(commandRegistry, "login", handlerLogin);
     handlerLogin("login", "Jacob")
+    // runCommand(commandRegistry, "login", "is this working");
 }
 
 main();

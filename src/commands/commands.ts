@@ -1,4 +1,5 @@
 import { setUser } from '../config.ts'
+
 type CommandHandler = (cmdName: string, ...args: string[]) => void;
 
 export type CommandsRegistry = Record<string, CommandHandler>
@@ -16,4 +17,10 @@ export function handlerLogin(cmdName: string, ...args: string[]): void{
 
 export function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
     registry[cmdName] = handler
+}
+
+export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]){
+   if (cmdName in registry){
+        console.log("heres what in reg", registry);
+    } 
 }
