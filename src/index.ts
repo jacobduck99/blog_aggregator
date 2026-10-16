@@ -1,9 +1,9 @@
 import { setUser, readConfig } from './config.ts'
 import { handlerLogin, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
 
-function main() {
+async function main() {
     const commandRegistry: CommandsRegistry = {};
-    registerCommand(commandRegistry, "login", handlerLogin);
+    await registerCommand(commandRegistry, "login", handlerLogin);
 
     const args = process.argv.slice(2);
 
@@ -15,11 +15,13 @@ function main() {
     const [cmdName, ...cmdArgs] = args;
 
     try {
-    runCommand(commandRegistry, cmdName, ...cmdArgs);
+    await runCommand(commandRegistry, cmdName, ...cmdArgs);
     } catch (err) {
     console.error((err as Error).message);
     process.exit(1);
     }
+
+    process.exit(0);
     }
 
 main();
