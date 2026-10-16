@@ -22,7 +22,13 @@ export function registerCommand(registry: CommandsRegistry, cmdName: string, han
 export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]){
    if (cmdName in registry){
         const fn = registry[cmdName]
-        fn(cmdName, args);
+        fn(cmdName, ...args);
      
+    }else {
+        try{
+            throw new Error("Command doesn't exist in look up table");
+        } catch (error){
+            console.error(`User inputted command: '${cmdName}' which doesn't exist`)
+        }
     } 
 }

@@ -4,7 +4,7 @@ import { handlerLogin, registerCommand, CommandsRegistry, runCommand} from './co
 function main() {
     const commandRegistry: CommandsRegistry = {};
     registerCommand(commandRegistry, "login", handlerLogin);
-    runCommand(commandRegistry, "login", "is this working");
+    runCommand(commandRegistry, "login", "Jakob");
 }
 
 main();
