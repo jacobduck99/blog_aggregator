@@ -21,6 +21,8 @@ export function registerCommand(registry: CommandsRegistry, cmdName: string, han
 
 export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]){
    if (cmdName in registry){
-        console.log("heres what in reg", registry);
+        const fn = registry[cmdName]
+        fn(cmdName, args);
+     
     } 
 }
