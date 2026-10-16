@@ -4,7 +4,22 @@ import { handlerLogin, registerCommand, CommandsRegistry, runCommand} from './co
 function main() {
     const commandRegistry: CommandsRegistry = {};
     registerCommand(commandRegistry, "login", handlerLogin);
-    runCommand(commandRegistry, "login", "Jakob");
-}
+
+    const args = process.argv.slice(2);
+
+    if (args.length < 1) {
+    console.error("not enough arguments were provided");
+    process.exit(1);
+    }
+
+    const [cmdName, ...cmdArgs] = args;
+
+    try {
+    runCommand(commandRegistry, cmdName, ...cmdArgs);
+    } catch (err) {
+    console.error((err as Error).message);
+    process.exit(1);
+    }
+    }
 
 main();

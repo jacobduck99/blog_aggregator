@@ -1,18 +1,17 @@
 import { setUser } from '../config.ts'
+import { exit } from 'node:process';
 
 type CommandHandler = (cmdName: string, ...args: string[]) => void;
 
 export type CommandsRegistry = Record<string, CommandHandler>
 
 export function handlerLogin(cmdName: string, ...args: string[]): void{
-        if (!args.length){
+    if (!args.length){
         throw new Error("The login handler expects a single argument username")
     } else {
         setUser(args[0])
         console.log("user set", args[0]);
     }
-     
-        
 }
 
 export function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
@@ -22,13 +21,11 @@ export function registerCommand(registry: CommandsRegistry, cmdName: string, han
 export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]){
    if (cmdName in registry){
         const fn = registry[cmdName]
-        fn(cmdName, ...args);
-     
+        fn(cmdName, ...args); 
     }else {
-        try{
-            throw new Error("Command doesn't exist in look up table");
-        } catch (error){
-            console.error(`User inputted command: '${cmdName}' which doesn't exist`)
-        }
+        throw new Error("Command doesn't exist in look up table");
+        process.exit(1);
     } 
 }
+
+
