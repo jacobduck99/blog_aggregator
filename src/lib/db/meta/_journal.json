@@ -8,6 +8,20 @@
       "when": 1792142985870,
       "tag": "0000_superb_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792224502830,
+      "tag": "0001_faithful_nemesis",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792230191236,
+      "tag": "0002_spotty_union_jack",
+      "breakpoints": true
     }
   ]
 }

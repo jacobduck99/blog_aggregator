@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -63,6 +63,17 @@ export async function handlerFetchUrl(): Promise<void>{
     const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(fetch);
 }
+
+export async function handlerCreateFeed(cmd: string, name: string, url: string): Promise<void>{
+    const loggedIn = readConfig().currentUserName;
+    console.log("logged in name", loggedIn);
+    const user = await getUser(loggedIn);
+    const userId = user.id;
+    console.log("userId", userId);
+    const newFeed = await createFeed(name, url, userId);
+    console.log("here is new feed", newFeed);
+
+    }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
     registry[cmdName] = handler
