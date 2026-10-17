@@ -1,7 +1,6 @@
 import { setUser, readConfig } from './config.ts'
-import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
+import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, handlerFetchUrl, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
 import { getUsers } from '../src/lib/db/queries/users.ts'
-import { fetchFeed } from './lib/rss.ts' //was testing out function 
 
 async function main() {
     const commandRegistry: CommandsRegistry = {};
@@ -9,9 +8,9 @@ async function main() {
     await registerCommand(commandRegistry, "register", handlerRegister);
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
+    await registerCommand(commandRegistry, "agg", handlerFetchUrl);
 
-
-    await fetchFeed("https://www.wagslane.dev/index.xml") //Was testing out function
+    // await fetchFeed("https://www.wagslane.dev/index.xml") //Was testing out function
 
     const args = process.argv.slice(2);
 

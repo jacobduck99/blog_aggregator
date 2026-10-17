@@ -16,57 +16,57 @@ type RSSItem = {
   pubDate: string;
 };
 
-// need to change return back to Promise<RSSItem[]>
-export async function fetchFeed(feedURL: string): Promise<RSSItem[]> {
+export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
     const response = await fetch(feedURL, {
         headers: {
           "User-Agent": "gator",
         },
-      });
+        });
 
     const xmlString = await response.text();
-    const parser = new XMLParser();
-    const setFalse = parser.options.processEntities.enabled = false
-    console.log("parser", parser);
 
-    let obj = parser.parse(xmlString);
-    let items: string = [];
+    const parser = new XMLParser({
+    processEntities: false,
+    });
 
-    console.log("obj", obj);
-    if (!obj.rss?.channel) {
-      throw new Error("Channel doesn't exist");
-    } else {
-        const title = obj.rss.channel.title;
-        const link = obj.rss.channel.link;
-        const description = obj.rss.channel.description
-        console.log("here's title", title);
-        console.log("here's link", link);
-        console.log("here's description", description);
-        if (!obj.rss?.channel.item){
-            items = []; 
-            console.log("here's your items", items);
-        } else {
-            const checkA = Array.isArray(obj.rss.channel.item)
-            items = obj.rss.channel.item;
-            console.log("here's channel in the else statement", items)
-            items.forEach((i) => console.log(i.title));
-        }
+    const parsed = parser.parse(xmlString);
+    const channel = parsed.rss?.channel;
 
-        const channel = { channel: items }
-
-        console.log("here's channel", channel);
-
-    return channel
-
+    if (!channel) {
+        throw new Error("RSS feed has no channel");
     }
 
+    if (
+    typeof channel.title !== "string" ||
+    typeof channel.link !== "string" ||
+    typeof channel.description !== "string"
+    ) {
+    throw new Error("RSS channel metadata is invalid");
+    }
 
+    const rawItems = channel.item
+    ? Array.isArray(channel.item)
+      ? channel.item
+      : [channel.item]
+    : [];
 
+    const items: RSSItem[] = rawItems.filter(
+    (item: unknown): item is RSSItem =>
+      typeof item === "object" &&
+      item !== null &&
+      typeof (item as RSSItem).title === "string" &&
+      typeof (item as RSSItem).link === "string" &&
+      typeof (item as RSSItem).description === "string" &&
+      typeof (item as RSSItem).pubDate === "string",
+    );
 
-
-  // Create an XMLParser here.
-  // Parse xmlString.
-  // Validate and extract the channel metadata and items.
-  // Return an RSSFeed-shaped object.
-}
+    return {
+    channel: {
+      title: channel.title,
+      link: channel.link,
+      description: channel.description,
+      item: items,
+    },
+    };
+    }
 
