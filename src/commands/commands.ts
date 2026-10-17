@@ -6,7 +6,7 @@ type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
 export type CommandsRegistry = Record<string, CommandHandler>
 
-export async function handlerLogin(cmdName: string, ...args: string[]): void{
+export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
         throw new Error("The login handler expects a single argument username")
     } else {
@@ -15,13 +15,17 @@ export async function handlerLogin(cmdName: string, ...args: string[]): void{
     }
 }
 
-export async function handlerRegister(cmdName: string, ...args: string[]): void{
+export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
         throw new Error("The register handler expects a single argument username")
     } else {
-        await createUser(args[0])
-        if (args[0] in createUser){
-            console.log("here's args in handlerRegister", args[0])
+        const checkUser = await getUser(args[0])
+        if (checkUser){
+            throw new Error("User already exits");
+        } else {
+            const newUser = await createUser(args[0])
+            setUser(args[0])
+            console.log("New user created ", newUser);
         }
     }
 }
