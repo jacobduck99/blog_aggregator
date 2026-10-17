@@ -1,6 +1,6 @@
 import { setUser } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser } from '../lib/db/queries/users.ts'
+import { createUser, getUser } from '../lib/db/queries/users.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -20,9 +20,9 @@ export async function handlerRegister(cmdName: string, ...args: string[]): void{
         throw new Error("The register handler expects a single argument username")
     } else {
         await createUser(args[0])
-        // if (args[0] in createUser){
+        if (args[0] in createUser){
             console.log("here's args in handlerRegister", args[0])
-        // }
+        }
     }
 }
 
