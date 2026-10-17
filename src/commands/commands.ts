@@ -41,7 +41,7 @@ export async function handlerReset(): Promise<void>{
     if (!resetDb){
         process.exit(0);
     }else {
-        proces.exit(1);
+        process.exit(1);
     }
 
 }
