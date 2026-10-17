@@ -2,6 +2,9 @@ import { db } from "../index.ts";
 import { users, feeds } from "../../../schema.ts";
 import { eq } from "drizzle-orm";
 
+export type User = typeof users.$inferSelect;
+export type Feed = typeof feeds.$inferSelect;
+
 export async function createUser(name: string): Promise<string[]>{
   const [result] = await db.insert(users).values({ name: name }).returning();
   return result;
@@ -26,4 +29,13 @@ export async function createFeed(name: string, url: string, user_id: string): Pr
     const [result] = await db.insert(feeds).values({ name: name, url: url, user_id: user_id }).returning();
     console.log("here's result create feed", result);
     return result;
+}
+
+export function printFeed(feed: feeds, user: users) {
+  console.log(`* ID:        ${feed.id}`);
+  console.log(`* Created:   ${feed.createdAt}`);
+  console.log(`* Updated:   ${feed.updatedAt}`);
+  console.log(`* Name:      ${feed.name}`);
+  console.log(`* URL:       ${feed.url}`);
+  console.log(`* User:      ${user.name}`);
 }

@@ -9,7 +9,7 @@ async function main() {
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerFetchUrl);
-    await registerCommand(commandRegistry, "addFeed", handlerCreateFeed); // change this to handler create feed
+    await registerCommand(commandRegistry, "addfeed", handlerCreateFeed);
 
     const args = process.argv.slice(2);
 
