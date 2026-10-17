@@ -10,8 +10,6 @@ async function main() {
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerFetchUrl);
 
-    // await fetchFeed("https://www.wagslane.dev/index.xml") //Was testing out function
-
     const args = process.argv.slice(2);
 
     if (args.length < 1) {

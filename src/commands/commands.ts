@@ -59,7 +59,7 @@ export async function handlerGetUsers(): Promise<void>{
     }
 }
 
-export async function handlerFetchUrl(feedURL: string): Promise<void>{
+export async function handlerFetchUrl(): Promise<void>{
     const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(fetch);
 }
