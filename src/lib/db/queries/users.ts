@@ -1,5 +1,5 @@
 import { db } from "../index.ts";
-import { users } from "../../../schema.ts";
+import { users, feeds } from "../../../schema.ts";
 import { eq } from "drizzle-orm";
 
 export async function createUser(name: string): Promise<string[]>{
@@ -19,5 +19,11 @@ export async function deleteUsers(): Promise<string[]>{
 
 export async function getUsers(): Promise<string[]>{
     const result = await db.select().from(users);
+    return result;
+}
+
+export async function createFeed(name: string): Promise<String[]>{
+    const [result] = await db.select().from(feeds);
+    console.log("here's result create feed", result);
     return result;
 }
