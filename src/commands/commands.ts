@@ -66,12 +66,9 @@ export async function handlerFetchUrl(): Promise<void>{
 
 export async function handlerCreateFeed(cmd: string, name: string, url: string): Promise<void>{
     const loggedIn = readConfig().currentUserName;
-    console.log("logged in name", loggedIn);
     const user = await getUser(loggedIn);
     const userId = user.id;
-    console.log("userId", userId);
     const newFeed = await createFeed(name, url, userId);
-    console.log("here is new feed", newFeed);
 
     }
 
