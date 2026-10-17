@@ -1,6 +1,6 @@
 import { setUser } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers } from '../lib/db/queries/users.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -33,6 +33,16 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
             console.log("New user created ", newUser);
         }
     }
+}
+
+export async function handlerReset(): Promise<void>{
+    const resetDb = await deleteUsers();
+    if (!resetDb){
+        process.exit(0);
+    }else {
+        proces.exit(1);
+    }
+
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
