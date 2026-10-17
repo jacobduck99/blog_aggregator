@@ -1,6 +1,6 @@
-import { setUser } from '../config.ts'
+import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers } from '../lib/db/queries/users.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -43,6 +43,19 @@ export async function handlerReset(): Promise<void>{
         proces.exit(1);
     }
 
+}
+
+export async function handlerGetUsers(): Promise<void>{
+    const users = await getUsers();
+    const checkLoggedIn = readConfig()
+    for (const user of users){
+        if (user.name == checkLoggedIn.currentUserName){
+            console.log(`${user.name} (current)`);
+        }
+        else {
+            console.log(user.name)
+        }
+    }
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){

@@ -17,3 +17,7 @@ export async function deleteUsers(): Promise<string[]>{
     return result;
 }
 
+export async function getUsers(): Promise<string[]>{
+    const result = await db.select().from(users);
+    return result;
+}

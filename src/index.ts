@@ -1,11 +1,13 @@
 import { setUser, readConfig } from './config.ts'
-import { handlerLogin, handlerRegister, handlerReset, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
+import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
+import { getUsers } from '../src/lib/db/queries/users.ts'
 
 async function main() {
     const commandRegistry: CommandsRegistry = {};
     await registerCommand(commandRegistry, "login", handlerLogin);
     await registerCommand(commandRegistry, "register", handlerRegister);
     await registerCommand(commandRegistry, "reset", handlerReset);
+    await registerCommand(commandRegistry, "users", handlerGetUsers);
 
     const args = process.argv.slice(2);
 
