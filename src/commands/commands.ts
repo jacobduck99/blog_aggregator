@@ -49,7 +49,7 @@ export async function handlerGetUsers(): Promise<void>{
     const users = await getUsers();
     const checkLoggedIn = readConfig()
     for (const user of users){
-        if (user.name == checkLoggedIn.currentUserName){
+        if (user.name === checkLoggedIn.currentUserName){
             console.log(`${user.name} (current)`);
         }
         else {
