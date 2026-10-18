@@ -51,15 +51,14 @@ export async function getFeeds(): Promise<void>{
     }
 }
 
-/// NEED TO PUT FEED ID BACK IN PARAMETER AND VALUES FOR INSERT
-export async function createFeedFollow(user_id: string): Promise<string[]>{
-    const [newFeedFollow] = await db.insert(feed_follows).values({ user_id: user_id }).returning();
+export async function createFeedFollow(userId: string, feedId: string): Promise<string[]>{
+    const [newFeedFollow] = await db.insert(feed_follows).values({ user_id: userId, feed_id: feedId }).returning();
     console.log("new feed follow", newFeedFollow);
     return newFeedFollow;
 }
 
-export async function getUserfeeds(): Promise<string>{
-    const [userFeed] = await db.insert(feeds).select().returning();
+export async function getUserFeeds(): Promise<string>{
+    const [userFeed] = await db.select().from(feeds);
     console.log("here's user feed", userFeed);
     return userFeed;
 
