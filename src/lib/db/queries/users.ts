@@ -40,7 +40,7 @@ export function printFeed(feed: feeds, user: users) {
   console.log(`* User:      ${user.name}`);
 }
 
-export async function getFeeds(): Promise<string[]>{
+export async function getFeeds(): Promise<void>{
     const result = await db.select({
         name: feeds.name,
         url: feeds.url,
