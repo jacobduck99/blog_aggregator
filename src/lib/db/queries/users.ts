@@ -50,13 +50,3 @@ export async function getFeeds(): Promise<string[]>{
         console.log(r.name, r.url, r.userName);
     }
 }
-
-// ).where(eq(feeds.user_id))
-    // for (const u of user){
-    //     const users = u
-    //     const singleUser = users.users_Name
-    //     for (const r of result){
-    //         const feedName = r.name;
-    //         const url = r.url;
-    // console.log(feedName, url, singleUser);
-
