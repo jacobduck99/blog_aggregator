@@ -39,3 +39,24 @@ export function printFeed(feed: feeds, user: users) {
   console.log(`* URL:       ${feed.url}`);
   console.log(`* User:      ${user.name}`);
 }
+
+export async function getFeeds(): Promise<string[]>{
+    const result = await db.select({
+        name: feeds.name,
+        url: feeds.url,
+        userName: users.name,
+    }).from(feeds).innerJoin(users, eq(users.id, feeds.user_id))
+    for (const r of result){
+        console.log(r.name, r.url, r.userName);
+    }
+}
+
+// ).where(eq(feeds.user_id))
+    // for (const u of user){
+    //     const users = u
+    //     const singleUser = users.users_Name
+    //     for (const r of result){
+    //         const feedName = r.name;
+    //         const url = r.url;
+    // console.log(feedName, url, singleUser);
+

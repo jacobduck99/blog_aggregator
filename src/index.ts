@@ -1,5 +1,5 @@
 import { setUser, readConfig } from './config.ts'
-import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, handlerFetchUrl, handlerCreateFeed, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
+import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, handlerFetchUrl, handlerCreateFeed, handlerGetAllFeeds, registerCommand, CommandsRegistry, runCommand} from './commands/commands.ts'
 import { getUsers } from '../src/lib/db/queries/users.ts'
 
 async function main() {
@@ -10,6 +10,7 @@ async function main() {
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerFetchUrl);
     await registerCommand(commandRegistry, "addfeed", handlerCreateFeed);
+    await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
 
     const args = process.argv.slice(2);
 

@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -71,6 +71,10 @@ export async function handlerCreateFeed(cmd: string, name: string, url: string):
     const newFeed = await createFeed(name, url, userId);
     printFeed(newFeed, user);
     }
+
+export async function handlerGetAllFeeds(): Promise<void>{
+    await getFeeds();
+}
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
     registry[cmdName] = handler
