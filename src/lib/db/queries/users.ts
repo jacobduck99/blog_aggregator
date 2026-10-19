@@ -5,6 +5,12 @@ import { eq } from "drizzle-orm";
 export type User = typeof users.$inferSelect;
 export type Feed = typeof feeds.$inferSelect;
 
+type UserCommandHandler = (
+    cmdName: string,
+    user: User,
+    ...args: string[]
+) => Promise<void>;
+
 export async function createUser(name: string): Promise<string[]>{
     const [result] = await db.insert(users).values({ name: name }).returning();
     return result;

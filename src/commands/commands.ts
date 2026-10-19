@@ -7,6 +7,31 @@ type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
 export type CommandsRegistry = Record<string, CommandHandler>
 
+type UserCommandHandler = (
+    cmdName: string,
+    user: User,
+    ...args: string[]
+) => Promise<void>;
+
+type middlewareLoggedIn = (handler: UserCommandHandler) => CommandHandler;
+
+export function middlewareLoggedIn(handler: UserCommandHandler): CommandHandler {
+    return async (cmdName: string, ...args: string[]) => {
+    const userName = readConfig().currentUserName;
+    if (!userName) {
+      throw new Error("No user logged in");
+    }
+
+    const user = await getUser(userName);
+    if (!user) {
+      throw new Error(`User ${userName} not found`);
+    }
+
+    await handler(cmdName, user, ...args);
+  };
+}
+
+
 export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
         throw new Error("The login handler expects a single argument username")
@@ -65,40 +90,42 @@ export async function handlerFetchUrl(): Promise<void>{
     console.log(fetch);
 }
 
-export async function handlerCreateFeed(cmd: string, name: string, url: string): Promise<void>{
-    const loggedIn = readConfig().currentUserName;
-    const user = await getUser(loggedIn);
-    const userId = user.id;
-    const newFeed = await createFeed(name, url, userId);
-    const feedId = newFeed.id;
-    const newFollow = await createFeedFollow(userId, feedId)
-    printFeed(newFeed, user);
-    console.log(`${newFollow.feedName}, ${newFollow.userName} `);    
+export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length !== 2) {
+    throw new Error(`usage: ${cmdName} <name> <url>`);
     }
+    const [name, url] = args;
+
+    const newFeed = await createFeed(name, url, user.id);
+    const newFollow = await createFeedFollow(user.id, newFeed.id);
+    printFeed(newFeed, user);
+    console.log(`${newFollow.feedName}, ${newFollow.userName}`);
+}
 
 export async function handlerGetAllFeeds(): Promise<void>{
     await getFeeds();
 }
 
-export async function handlerCreateFeedFollow(cmd: string, url: string): Promise<void> {
-    const loggedIn = readConfig().currentUserName;
-    const user = await getUser(loggedIn);
+export async function handlerCreateFeedFollow(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length !== 1) {
+    throw new Error(`usage: ${cmdName} <url>`);
+    }
+    const url = args[0];
 
     const feed = await getFeedByUrl(url);
     if (!feed) {
-        throw new Error(`no feed found with url: ${url}`);
+    throw new Error(`no feed found with url: ${url}`);
     }
 
     const feedFollow = await createFeedFollow(user.id, feed.id);
     console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
 }
 
-export async function handlerGetAllFollowsForUser(): Promise<string>{
-    const loggedIn = readConfig().currentUserName;
-    const user = await getUser(loggedIn);
-    const userId = user.id;
-
-    const getFollowsForUser = await getFeedFollowsForUser(userId);
+export async function handlerGetAllFollowsForUser(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    const follows = await getFeedFollowsForUser(user.id);
+    for (const f of follows) {
+    console.log(f.feedName);
+}
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
