@@ -69,7 +69,13 @@ export async function handlerCreateFeed(cmd: string, name: string, url: string):
     const user = await getUser(loggedIn);
     const userId = user.id;
     const newFeed = await createFeed(name, url, userId);
+    const feedId = newFeed.id;
+    const newFollow = await createFeedFollow(userId, feedId)
+    const feedName = newFollow.feedName;
+    const userName = newFollow.userName;
     printFeed(newFeed, user);
+    console.log(feedName, userName);
+    
     }
 
 export async function handlerGetAllFeeds(): Promise<void>{
