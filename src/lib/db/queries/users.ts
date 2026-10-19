@@ -66,6 +66,13 @@ export async function createFeedFollow(userId: string, feedId: string) {
     return result;
 }
 
+export async function followFeed(url: string) {
+    const user = getFeed();
+    const userId = user.userName;
+    const [result] = db.insert(feeds).values({ url: url }).returning();
+    console.log("follow feed result", result);
+}
+
 export async function getUserFeeds(): Promise<string>{
     const [userFeed] = await db.select().from(feeds);
     console.log("here's user feed", userFeed);
