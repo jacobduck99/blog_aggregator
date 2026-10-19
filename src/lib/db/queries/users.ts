@@ -77,11 +77,18 @@ export async function getUserFeeds(): Promise<string>{
 
 }
 
-export async function getFeedFollowsForUser(){
-    const [getFeedFollows] = await db.select({
-        feedFollows: feed_follows,
+export async function getFeedFollowsForUser(userId: string) {
+    const result = await db.select({
+        id: feed_follows.id,
+        createdAt: feed_follows.createdAt,
+        updatedAt: feed_follows.updatedAt,
         feedName: feeds.name,
         userName: users.name,
-    }).from(feed_follows).innerJoin(feeds, eq(feeds.id, feed_follows.feed_id)).innerJoin(users, eq(users.id, feed_follows.user_id)).where(eq(users.id, feed_follows.user_id))
-    console.log("here's get follows", getFeedFollows);
+    })
+    .from(feed_follows)
+    .innerJoin(feeds, eq(feed_follows.feed_id, feeds.id))
+    .innerJoin(users, eq(feed_follows.user_id, users.id))
+    .where(eq(feed_follows.user_id, userId));
+    console.log("result get feed follower users", result);
+    return result;
 }

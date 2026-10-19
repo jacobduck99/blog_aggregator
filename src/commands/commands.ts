@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -87,6 +87,14 @@ export async function handlerCreateFeedFollow(cmd: string, url: string): Promise
 
     const feedFollow = await createFeedFollow(user.id, feed.id);
     console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
+}
+
+export async function handlerGetAllFollowsForUser(): Promise<string>{
+    const loggedIn = readConfig().currentUserName;
+    const user = await getUser(loggedIn);
+    const userId = user.id;
+
+    const getFollowsForUser = await getFeedFollowsForUser(userId);
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
