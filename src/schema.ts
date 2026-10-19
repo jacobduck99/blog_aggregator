@@ -25,8 +25,8 @@ export const feeds = pgTable("feeds", {
 
 export const feed_follows = pgTable("feed_follows", {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    created_at: timestamp("created_at").notNull().defaultNow(),
-    updated_at: timestamp("updated_at")
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
         .notNull()
         .defaultNow()
         .$onUpdate(() => new Date()),

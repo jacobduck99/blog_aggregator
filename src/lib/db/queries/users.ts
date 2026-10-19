@@ -40,7 +40,7 @@ export function printFeed(feed: feeds, user: users) {
     console.log(`* User:      ${user.name}`);
 }
 
-export async function getFeeds(): Promise<void>{
+export async function getFeeds(): Promise<void> {
     const result = await db.select({
         name: feeds.name,
         url: feeds.url,
@@ -51,10 +51,19 @@ export async function getFeeds(): Promise<void>{
     }
 }
 
-export async function createFeedFollow(userId: string, feedId: string): Promise<string[]>{
-    const [newFeedFollow] = await db.insert(feed_follows).values({ user_id: userId, feed_id: feedId }).returning();
-    console.log("new feed follow", newFeedFollow);
-    return newFeedFollow;
+export async function createFeedFollow(userId: string, feedId: string) { 
+    const [newFeedFollow] = await db.insert(feed_follows).values({ 
+        user_id: userId, 
+        feed_id: feedId }).returning();
+    const [result] = await db.select({ 
+        id: feed_follows.id, 
+        createdAt: feed_follows.createdAt, 
+        updatedAt: feed_follows.updatedAt,
+        feedName: feeds.name,
+        userName: users.name, 
+    }).from(feed_follows).innerJoin(feeds, eq(feed_follows.feed_id, feeds.id)).innerJoin(users, eq(feed_follows.user_id, users.id)).where(eq(feed_follows.id, newFeedFollow.id))
+    console.log("here's result", result);
+    return result;
 }
 
 export async function getUserFeeds(): Promise<string>{
