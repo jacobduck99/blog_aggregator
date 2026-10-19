@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -76,14 +76,17 @@ export async function handlerGetAllFeeds(): Promise<void>{
     await getFeeds();
 }
 
-export async function handlerCreateFeedFollow(url: string): Promise<string[]>{
+export async function handlerCreateFeedFollow(cmd: string, url: string): Promise<void> {
     const loggedIn = readConfig().currentUserName;
     const user = await getUser(loggedIn);
-    const userId = user.id;
-    const feed = await getUserFeeds();
-    const feedId = feed.id
-    // const userId = user.id;
-    await createFeedFollow(userId, feedId); // PUT user id and feed id here
+
+    const feed = await getFeedByUrl(url);
+    if (!feed) {
+        throw new Error(`no feed found with url: ${url}`);
+    }
+
+    const feedFollow = await createFeedFollow(user.id, feed.id);
+    console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){

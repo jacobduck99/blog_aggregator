@@ -62,15 +62,12 @@ export async function createFeedFollow(userId: string, feedId: string) {
         feedName: feeds.name,
         userName: users.name, 
     }).from(feed_follows).innerJoin(feeds, eq(feed_follows.feed_id, feeds.id)).innerJoin(users, eq(feed_follows.user_id, users.id)).where(eq(feed_follows.id, newFeedFollow.id))
-    console.log("here's result", result);
     return result;
 }
 
-export async function followFeed(url: string) {
-    const user = getFeed();
-    const userId = user.userName;
-    const [result] = db.insert(feeds).values({ url: url }).returning();
-    console.log("follow feed result", result);
+export async function getFeedByUrl(url: string) {
+    const [result] = await db.select().from(feeds).where(eq(feeds.url, url));
+    return result;
 }
 
 export async function getUserFeeds(): Promise<string>{
