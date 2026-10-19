@@ -27,7 +27,6 @@ export async function getUsers(): Promise<string[]>{
 
 export async function createFeed(name: string, url: string, user_id: string): Promise<String[]>{
     const [result] = await db.insert(feeds).values({ name: name, url: url, user_id: user_id }).returning();
-    console.log("here's result create feed", result);
     return result;
 }
 

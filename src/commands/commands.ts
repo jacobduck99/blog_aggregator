@@ -59,6 +59,7 @@ export async function handlerGetUsers(): Promise<void>{
     }
 }
 
+/// MIGHT NEED TO CHANGE THIS TO HAVE URL PARAMTER THEN PUT FETCH FEED AS THAT IDK LOOKS FISHY 
 export async function handlerFetchUrl(): Promise<void>{
     const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(fetch);
@@ -71,11 +72,8 @@ export async function handlerCreateFeed(cmd: string, name: string, url: string):
     const newFeed = await createFeed(name, url, userId);
     const feedId = newFeed.id;
     const newFollow = await createFeedFollow(userId, feedId)
-    const feedName = newFollow.feedName;
-    const userName = newFollow.userName;
     printFeed(newFeed, user);
-    console.log(feedName, userName);
-    
+    console.log(`${newFollow.feedName}, ${newFollow.userName} `);    
     }
 
 export async function handlerGetAllFeeds(): Promise<void>{
