@@ -116,3 +116,10 @@ export async function getFeedFollowsForUser(userId: string) {
     console.log("result get feed follower users", result);
     return result;
 }
+
+export async function markFeedFetched(){
+    const timestamp = Date.now();
+    console.log("timestamp", timestamp)
+    const result = await db.update(feeds).values({ updatedAt: timestamp, lastFetchedAt: timestamp });
+    console.log("here's result fetched", result);
+}

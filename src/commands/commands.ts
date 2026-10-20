@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser, deleteFeedFollow } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser, deleteFeedFollow, markFeedFetched } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -84,9 +84,10 @@ export async function handlerGetUsers(): Promise<void>{
 }
 
 /// MIGHT NEED TO CHANGE THIS TO HAVE URL PARAMTER THEN PUT FETCH FEED AS THAT IDK LOOKS FISHY 
-export async function handlerFetchUrl(): Promise<void>{
+export async function handlerFetchUrl(url: string): Promise<void>{
     const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(fetch);
+    await markFeedFetched();
 }
 
 export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
