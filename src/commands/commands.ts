@@ -46,7 +46,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
 }
 
 export async function handlerScrapeFeeds(url:string){
-    const feed = getFeedByUrl(url);
+    const feed = await getFeedByUrl(url);
     const feedId = feed.id;
     const timestamp = Date.now();
     const timestampObj = { timestamp: timestamp };

@@ -25,6 +25,7 @@ async function main() {
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerScrapeFeeds);
+    // CHANGE BACK TO HANDLER FETCHURL JUST TESTING THINGS
     await registerCommand(commandRegistry, "addfeed", middlewareLoggedIn(handlerCreateFeed));
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
     await registerCommand(commandRegistry, "follow", middlewareLoggedIn(handlerCreateFeedFollow));
