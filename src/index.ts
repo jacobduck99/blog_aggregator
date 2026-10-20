@@ -12,7 +12,8 @@ import {
     handlerUnfollow, 
     registerCommand, 
     CommandsRegistry, 
-    middlewareLoggedIn, 
+    middlewareLoggedIn,
+    handlerScrapeFeeds,
     runCommand} from './commands/commands.ts'
 
 import { getUsers, deleteFeedFollow } from '../src/lib/db/queries/users.ts'
@@ -23,7 +24,7 @@ async function main() {
     await registerCommand(commandRegistry, "register", handlerRegister);
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
-    await registerCommand(commandRegistry, "agg", handlerFetchUrl);
+    await registerCommand(commandRegistry, "agg", handlerScrapeFeeds);
     await registerCommand(commandRegistry, "addfeed", middlewareLoggedIn(handlerCreateFeed));
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
     await registerCommand(commandRegistry, "follow", middlewareLoggedIn(handlerCreateFeedFollow));

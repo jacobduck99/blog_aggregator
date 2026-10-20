@@ -45,6 +45,16 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     }
 }
 
+export async function handlerScrapeFeeds(url:string){
+    const feed = getFeedByUrl(url);
+    const feedId = feed.id;
+    const timestamp = Date.now();
+    const timestampObj = { timestamp: timestamp };
+    console.log("timestamp", timestampObj)
+    const markFetched = await markFeedFetched(feedId, timestampObj)
+    return markFetched
+}
+
 export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
         throw new Error("The register handler expects a single argument username")
@@ -84,10 +94,9 @@ export async function handlerGetUsers(): Promise<void>{
 }
 
 /// MIGHT NEED TO CHANGE THIS TO HAVE URL PARAMTER THEN PUT FETCH FEED AS THAT IDK LOOKS FISHY 
-export async function handlerFetchUrl(url: string): Promise<void>{
+export async function handlerFetchUrl(): Promise<void>{
     const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(fetch);
-    await markFeedFetched();
 }
 
 export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
