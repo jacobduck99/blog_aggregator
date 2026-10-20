@@ -1,6 +1,6 @@
 import { db } from "../index.ts";
 import { users, feeds, feed_follows } from "../../../schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export type User = typeof users.$inferSelect;
 export type Feed = typeof feeds.$inferSelect;
@@ -54,6 +54,25 @@ export async function getFeeds(): Promise<void> {
     for (const r of result){
         console.log(r.name, r.url, r.userName);
     }
+}
+
+export async function deleteFeedFollow(userId: string, url: string) {
+    const feed = await getFeedByUrl(url);
+    if (!feed) {
+    throw new Error(`no feed found with url: ${url}`);
+    }
+
+    const [deleted] = await db
+    .delete(feed_follows)
+    .where(
+      and(
+        eq(feed_follows.user_id, userId),
+        eq(feed_follows.feed_id, feed.id)
+      )
+    )
+    .returning();
+
+    return deleted;
 }
 
 export async function createFeedFollow(userId: string, feedId: string) { 

@@ -1,6 +1,21 @@
 import { setUser, readConfig } from './config.ts'
-import { handlerLogin, handlerRegister, handlerReset, handlerGetUsers, handlerFetchUrl, handlerCreateFeed, handlerGetAllFeeds, handlerCreateFeedFollow, handlerGetAllFollowsForUser, registerCommand, CommandsRegistry, middlewareLoggedIn, runCommand} from './commands/commands.ts'
-import { getUsers } from '../src/lib/db/queries/users.ts'
+import { 
+    handlerLogin, 
+    handlerRegister, 
+    handlerReset, 
+    handlerGetUsers, 
+    handlerFetchUrl, 
+    handlerCreateFeed, 
+    handlerGetAllFeeds, 
+    handlerCreateFeedFollow, 
+    handlerGetAllFollowsForUser, 
+    handlerUnfollow, 
+    registerCommand, 
+    CommandsRegistry, 
+    middlewareLoggedIn, 
+    runCommand} from './commands/commands.ts'
+
+import { getUsers, deleteFeedFollow } from '../src/lib/db/queries/users.ts'
 
 async function main() {
     const commandRegistry: CommandsRegistry = {};
@@ -13,6 +28,7 @@ async function main() {
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
     await registerCommand(commandRegistry, "follow", middlewareLoggedIn(handlerCreateFeedFollow));
     await registerCommand(commandRegistry, "following", middlewareLoggedIn(handlerGetAllFollowsForUser));
+    await registerCommand(commandRegistry, "unfollow", middlewareLoggedIn(handlerUnfollow));
 
     const args = process.argv.slice(2);
 

@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser, deleteFeedFollow } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -30,7 +30,6 @@ export function middlewareLoggedIn(handler: UserCommandHandler): CommandHandler 
     await handler(cmdName, user, ...args);
   };
 }
-
 
 export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
@@ -126,6 +125,21 @@ export async function handlerGetAllFollowsForUser(cmdName: string, user: User, .
     for (const f of follows) {
     console.log(f.feedName);
 }
+}
+
+export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
+    if (args.length !== 1) {
+    throw new Error(`usage: ${cmdName} <feed_url>`);
+    }
+
+    const url = args[0];
+    const deleted = await deleteFeedFollow(user.id, url);
+
+    if (!deleted) {
+    throw new Error(`${user.name} isn't following ${url}`);
+    }
+
+    console.log(`${user.name} unfollowed ${url}`);
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
