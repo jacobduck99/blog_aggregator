@@ -1,5 +1,5 @@
 import { db } from "../index.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { users, feeds, feed_follows } from "../../../schema.ts";
 
 export async function createFeed(name: string, url: string, user_id: string): Promise<String[]>{
@@ -31,8 +31,18 @@ export async function getUserFeeds(): Promise<string>{
 }
 
 export async function markFeedFetched(feedid: string){
-    const now = new date();
+    const now = new Date();
     const result = await db.update(feeds).set({ updatedat: now, lastfetchedat: now }).where(eq(feeds.id, feedid));
 }
 
-// export async function get
+export async function getNextFeedToFetch(){
+    const [result] = await db.select({ 
+        lastFetchedAt: feeds.lastFetchedAt,
+        id: feeds.id,
+        url: feeds.url }).from(feeds).orderBy(sql`${feeds.lastFetchedAt} ASC NULLS FIRST`).limit(1)
+    
+    console.log("here is result", result)
+
+
+}
+    

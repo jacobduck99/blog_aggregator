@@ -1,4 +1,4 @@
-import { getFeedByUrl, getFeeds, createFeed, markFeedFetched } from '../lib/db/queries/feeds.ts'
+import { getFeedByUrl, getFeeds, createFeed, markFeedFetched, getNextFeedToFetch } from '../lib/db/queries/feeds.ts'
 
 import { fetchFeed } from '../lib/rss.ts'
 
@@ -37,5 +37,6 @@ export async function handlerScrapeFeeds(cmd: string, url: string){
     const feed = await getFeedByUrl(url);
     const feedId = feed.id;
     const markFetched = await markFeedFetched(feedId)
+    const getNextFeed = await getNextFeedToFetch();
     return markFetched
 }
