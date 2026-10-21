@@ -117,9 +117,38 @@ export async function getFeedFollowsForUser(userId: string) {
     return result;
 }
 
-export async function markFeedFetched(){
-    const timestamp = Date.now();
-    console.log("timestamp", timestamp)
-    const result = await db.update(feeds).set({ updatedAt: timestamp, lastFetchedAt: timestamp }).where(eq(feeds.id, feeds.user_id));
+export async function markFeedFetched(feedId: string){
+    const now = new Date();
+    const result = await db.update(feeds).set({ updatedAt: now, lastFetchedAt: now }).where(eq(feeds.id, feedId));
     console.log("here's result fetched", result);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

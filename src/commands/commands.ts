@@ -45,13 +45,10 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     }
 }
 
-export async function handlerScrapeFeeds(url:string){
+export async function handlerScrapeFeeds(url: string){
     const feed = await getFeedByUrl(url);
     const feedId = feed.id;
-    const timestamp = Date.now();
-    const timestampObj = { timestamp: timestamp };
-    console.log("timestamp", timestampObj)
-    const markFetched = await markFeedFetched(feedId, timestampObj)
+    const markFetched = await markFeedFetched(feedId)
     return markFetched
 }
 
@@ -108,7 +105,7 @@ export async function handlerCreateFeed(cmdName: string, user: User, ...args: st
     const newFeed = await createFeed(name, url, user.id);
     const newFollow = await createFeedFollow(user.id, newFeed.id);
     printFeed(newFeed, user);
-    console.log(`${newFollow.feedName}, ${newFollow.userName}`);
+    console.log(`You are now following: ${newFollow.feedName}, by user: ${newFollow.userName}`);
 }
 
 export async function handlerGetAllFeeds(): Promise<void>{
