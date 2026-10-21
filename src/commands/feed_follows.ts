@@ -10,19 +10,7 @@ import {
     getFeedByUrl, 
     printFeed } 
 
-from '../lib/db/queries/users.ts'
-
-export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
-    if (args.length !== 2) {
-    throw new Error(`usage: ${cmdName} <name> <url>`);
-    }
-    const [name, url] = args;
-
-    const newFeed = await createFeed(name, url, user.id);
-    const newFollow = await createFeedFollow(user.id, newFeed.id);
-    printFeed(newFeed, user);
-    console.log(`You are now following: ${newFollow.feedName}, by user: ${newFollow.userName}`);
-}
+from '../lib/db/queries/feeds.ts'
 
 export async function handlerCreateFeedFollow(cmdName: string, user: User, ...args: string[]): Promise<void> {
     if (args.length !== 1) {

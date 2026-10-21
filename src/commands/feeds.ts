@@ -1,6 +1,18 @@
-import { getFeedByUrl, getFeeds } from '../lib/db/queries/feeds.ts'
+import { getFeedByUrl, getFeeds, createFeed } from '../lib/db/queries/feeds.ts'
 
 import { fetchFeed } from '../lib/rss.ts'
+
+export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length !== 2) {
+    throw new Error(`usage: ${cmdName} <name> <url>`);
+    }
+    const [name, url] = args;
+
+    const newFeed = await createFeed(name, url, user.id);
+    const newFollow = await createFeedFollow(user.id, newFeed.id);
+    printFeed(newFeed, user);
+    console.log(`You are now following: ${newFollow.feedName}, by user: ${newFollow.userName}`);
+}
 
 export function printFeed(feed: feeds, user: users) {
     console.log(`* ID:        ${feed.id}`);
