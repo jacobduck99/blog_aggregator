@@ -120,7 +120,6 @@ export async function getFeedFollowsForUser(userId: string) {
 export async function markFeedFetched(feedId: string){
     const now = new Date();
     const result = await db.update(feeds).set({ updatedAt: now, lastFetchedAt: now }).where(eq(feeds.id, feedId));
-    console.log("here's result fetched", result);
 }
 
 

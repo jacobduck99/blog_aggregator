@@ -45,7 +45,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     }
 }
 
-export async function handlerScrapeFeeds(url: string){
+export async function handlerScrapeFeeds(cmd: string, url: string){
     const feed = await getFeedByUrl(url);
     const feedId = feed.id;
     const markFetched = await markFeedFetched(feedId)
