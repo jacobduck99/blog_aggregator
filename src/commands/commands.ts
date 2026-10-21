@@ -1,10 +1,9 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, getUserFeeds, getFeedByUrl, deleteFeedFollow, markFeedFetched } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers,} from '../lib/db/queries/users.ts'
 
 import { createFeedFollow, getFeedFollowsForUser } from '../lib/db/queries/feed_follows.ts'
 
-import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -48,13 +47,6 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     }
 }
 
-export async function handlerScrapeFeeds(cmd: string, url: string){
-    const feed = await getFeedByUrl(url);
-    const feedId = feed.id;
-    const markFetched = await markFeedFetched(feedId)
-    return markFetched
-}
-
 export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void>{
     if (!args.length){
         throw new Error("The register handler expects a single argument username")
@@ -94,16 +86,6 @@ export async function handlerGetUsers(): Promise<void>{
 }
 
 /// MIGHT NEED TO CHANGE THIS TO HAVE URL PARAMTER THEN PUT FETCH FEED AS THAT IDK LOOKS FISHY 
-export async function handlerFetchUrl(): Promise<void>{
-    const fetch = await fetchFeed("https://www.wagslane.dev/index.xml");
-    console.log(fetch);
-}
-
-
-export async function handlerGetAllFeeds(): Promise<void>{
-    await getFeeds();
-}
-
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
     registry[cmdName] = handler
 }

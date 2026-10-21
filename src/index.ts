@@ -4,13 +4,11 @@ import {
     handlerRegister, 
     handlerReset, 
     handlerGetUsers, 
-    handlerFetchUrl, 
-    handlerGetAllFeeds,  
+    handlerFetchUrl,  
     handlerUnfollow, 
     registerCommand, 
     CommandsRegistry, 
     middlewareLoggedIn,
-    handlerScrapeFeeds,
     runCommand} from './commands/commands.ts'
 
 import { 
@@ -19,6 +17,11 @@ import {
     handlerGetAllFollowsForUser,
     handlerUnfollow
 } from './commands/feed_follows.ts'
+
+import { 
+    handlerGetAllFeeds, 
+    handlerScrapeFeeds
+} from './commands/feeds.ts'
 
 import { getUsers } from '../src/lib/db/queries/users.ts'
 
