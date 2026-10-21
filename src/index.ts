@@ -18,8 +18,7 @@ import {
 import { 
     handlerCreateFeed,
     handlerGetAllFeeds, 
-    handlerScrapeFeeds,
-    handlerFetchUrl
+    handlerAgg
 } from './commands/feeds.ts'
 
 import { getUsers } from '../src/lib/db/queries/users.ts'
@@ -30,7 +29,7 @@ async function main() {
     await registerCommand(commandRegistry, "register", handlerRegister);
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
-    await registerCommand(commandRegistry, "agg", handlerScrapeFeeds);
+    await registerCommand(commandRegistry, "agg", handlerAgg);
     // CHANGE BACK TO HANDLER FETCHURL JUST TESTING THINGS
     await registerCommand(commandRegistry, "addfeed", middlewareLoggedIn(handlerCreateFeed));
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);

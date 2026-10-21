@@ -30,19 +30,20 @@ export async function getUserFeeds(): Promise<string>{
 
 }
 
-export async function markFeedFetched(feedid: string){
+export async function markFeedFetched(feedId: string) {
     const now = new Date();
-    const result = await db.update(feeds).set({ updatedat: now, lastfetchedat: now }).where(eq(feeds.id, feedid));
+    await db
+        .update(feeds)
+        .set({ updatedAt: now, lastFetchedAt: now })
+        .where(eq(feeds.id, feedId));
 }
 
-export async function getNextFeedToFetch(){
-    const [result] = await db.select({ 
-        lastFetchedAt: feeds.lastFetchedAt,
-        id: feeds.id,
-        url: feeds.url }).from(feeds).orderBy(sql`${feeds.lastFetchedAt} ASC NULLS FIRST`).limit(1)
-    
-    console.log("here is result", result)
-
-
+export async function getNextFeedToFetch() {
+    const [result] = await db
+        .select()
+        .from(feeds)
+        .orderBy(sql`${feeds.lastFetchedAt} ASC NULLS FIRST`)
+        .limit(1);
+    return result;
 }
     
