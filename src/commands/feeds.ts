@@ -1,4 +1,4 @@
-import { getFeedByUrl, getFeeds, createFeed } from '../lib/db/queries/feeds.ts'
+import { getFeedByUrl, getFeeds, createFeed, markFeedFetched } from '../lib/db/queries/feeds.ts'
 
 import { fetchFeed } from '../lib/rss.ts'
 
