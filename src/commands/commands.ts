@@ -1,6 +1,6 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers,} from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers } from '../lib/db/queries/users.ts'
 
 import { createFeedFollow, getFeedFollowsForUser } from '../lib/db/queries/feed_follows.ts'
 

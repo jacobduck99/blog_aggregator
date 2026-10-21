@@ -2,7 +2,7 @@ import { db } from "../index.ts";
 import { users, feeds, feed_follows } from "../../../schema.ts";
 import { eq, and } from "drizzle-orm";
 
-import { getFeedByUrl } from './users.ts'
+import { getFeedByUrl } from './feeds.ts'
 
 export async function createFeedFollow(userId: string, feedId: string) { 
     const [newFeedFollow] = await db.insert(feed_follows).values({ 
@@ -30,11 +30,6 @@ export async function getFeedFollowsForUser(userId: string) {
     .innerJoin(feeds, eq(feed_follows.feed_id, feeds.id))
     .innerJoin(users, eq(feed_follows.user_id, users.id))
     .where(eq(feed_follows.user_id, userId));
-    return result;
-}
-
-export async function createFeed(name: string, url: string, user_id: string): Promise<String[]>{
-    const [result] = await db.insert(feeds).values({ name: name, url: url, user_id: user_id }).returning();
     return result;
 }
 

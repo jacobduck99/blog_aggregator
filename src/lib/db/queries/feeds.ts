@@ -29,3 +29,8 @@ export async function getUserFeeds(): Promise<string>{
     return userFeed;
 
 }
+
+export async function markfeedfetched(feedid: string){
+    const now = new date();
+    const result = await db.update(feeds).set({ updatedat: now, lastfetchedat: now }).where(eq(feeds.id, feedid));
+}
