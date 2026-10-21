@@ -5,10 +5,7 @@ import {
     handlerReset, 
     handlerGetUsers, 
     handlerFetchUrl, 
-    handlerCreateFeed, 
-    handlerGetAllFeeds, 
-    handlerCreateFeedFollow, 
-    handlerGetAllFollowsForUser, 
+    handlerGetAllFeeds,  
     handlerUnfollow, 
     registerCommand, 
     CommandsRegistry, 
@@ -16,7 +13,14 @@ import {
     handlerScrapeFeeds,
     runCommand} from './commands/commands.ts'
 
-import { getUsers, deleteFeedFollow } from '../src/lib/db/queries/users.ts'
+import { 
+    handlerCreateFeed, 
+    handlerCreateFeedFollow,     
+    handlerGetAllFollowsForUser,
+    handlerUnfollow
+} from './commands/feed_follows.ts'
+
+import { getUsers } from '../src/lib/db/queries/users.ts'
 
 async function main() {
     const commandRegistry: CommandsRegistry = {};

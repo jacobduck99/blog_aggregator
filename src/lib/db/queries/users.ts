@@ -75,19 +75,6 @@ export async function deleteFeedFollow(userId: string, url: string) {
     return deleted;
 }
 
-export async function createFeedFollow(userId: string, feedId: string) { 
-    const [newFeedFollow] = await db.insert(feed_follows).values({ 
-        user_id: userId, 
-        feed_id: feedId }).returning();
-    const [result] = await db.select({ 
-        id: feed_follows.id, 
-        createdAt: feed_follows.createdAt, 
-        updatedAt: feed_follows.updatedAt,
-        feedName: feeds.name,
-        userName: users.name, 
-    }).from(feed_follows).innerJoin(feeds, eq(feed_follows.feed_id, feeds.id)).innerJoin(users, eq(feed_follows.user_id, users.id)).where(eq(feed_follows.id, newFeedFollow.id))
-    return result;
-}
 
 export async function getFeedByUrl(url: string) {
     const [result] = await db.select().from(feeds).where(eq(feeds.url, url));
@@ -101,26 +88,13 @@ export async function getUserFeeds(): Promise<string>{
 
 }
 
-export async function getFeedFollowsForUser(userId: string) {
-    const result = await db.select({
-        id: feed_follows.id,
-        createdAt: feed_follows.createdAt,
-        updatedAt: feed_follows.updatedAt,
-        feedName: feeds.name,
-        userName: users.name,
-    })
-    .from(feed_follows)
-    .innerJoin(feeds, eq(feed_follows.feed_id, feeds.id))
-    .innerJoin(users, eq(feed_follows.user_id, users.id))
-    .where(eq(feed_follows.user_id, userId));
-    console.log("result get feed follower users", result);
-    return result;
-}
-
 export async function markFeedFetched(feedId: string){
     const now = new Date();
     const result = await db.update(feeds).set({ updatedAt: now, lastFetchedAt: now }).where(eq(feeds.id, feedId));
 }
+
+// export async function get
+
 
 
 

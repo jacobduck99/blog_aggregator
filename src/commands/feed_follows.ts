@@ -1,0 +1,62 @@
+import { 
+    createFeedFollow, 
+    getFeedFollowsForUser, 
+    deleteFeedFollow } 
+
+from '../lib/db/queries/feed_follows.ts'
+
+import { 
+    createFeed, 
+    getFeedByUrl, 
+    printFeed } 
+
+from '../lib/db/queries/users.ts'
+
+export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length !== 2) {
+    throw new Error(`usage: ${cmdName} <name> <url>`);
+    }
+    const [name, url] = args;
+
+    const newFeed = await createFeed(name, url, user.id);
+    const newFollow = await createFeedFollow(user.id, newFeed.id);
+    printFeed(newFeed, user);
+    console.log(`You are now following: ${newFollow.feedName}, by user: ${newFollow.userName}`);
+}
+
+export async function handlerCreateFeedFollow(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length !== 1) {
+    throw new Error(`usage: ${cmdName} <url>`);
+    }
+    const url = args[0];
+
+    const feed = await getFeedByUrl(url);
+    if (!feed) {
+    throw new Error(`no feed found with url: ${url}`);
+    }
+
+    const feedFollow = await createFeedFollow(user.id, feed.id);
+    console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
+}
+
+export async function handlerGetAllFollowsForUser(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    const follows = await getFeedFollowsForUser(user.id);
+    for (const f of follows) {
+    console.log(f.feedName);
+}
+}
+
+export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
+    if (args.length !== 1) {
+    throw new Error(`usage: ${cmdName} need feed url only`);
+    }
+
+    const url = args[0];
+    const deleted = await deleteFeedFollow(user.id, url);
+
+    if (!deleted) {
+    throw new Error(`${user.name} isn't following ${url}`);
+    }
+
+    console.log(`${user.name} unfollowed ${url}`);
+}

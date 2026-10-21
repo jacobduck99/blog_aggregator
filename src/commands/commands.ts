@@ -1,6 +1,9 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
-import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, createFeedFollow, getUserFeeds, getFeedByUrl, getFeedFollowsForUser, deleteFeedFollow, markFeedFetched } from '../lib/db/queries/users.ts'
+import { createUser, getUser, deleteUsers, getUsers, createFeed, printFeed, getFeeds, getUserFeeds, getFeedByUrl, deleteFeedFollow, markFeedFetched } from '../lib/db/queries/users.ts'
+
+import { createFeedFollow, getFeedFollowsForUser } from '../lib/db/queries/feed_follows.ts'
+
 import { fetchFeed } from '../lib/rss.ts'
 
 type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
@@ -96,57 +99,9 @@ export async function handlerFetchUrl(): Promise<void>{
     console.log(fetch);
 }
 
-export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
-    if (args.length !== 2) {
-    throw new Error(`usage: ${cmdName} <name> <url>`);
-    }
-    const [name, url] = args;
-
-    const newFeed = await createFeed(name, url, user.id);
-    const newFollow = await createFeedFollow(user.id, newFeed.id);
-    printFeed(newFeed, user);
-    console.log(`You are now following: ${newFollow.feedName}, by user: ${newFollow.userName}`);
-}
 
 export async function handlerGetAllFeeds(): Promise<void>{
     await getFeeds();
-}
-
-export async function handlerCreateFeedFollow(cmdName: string, user: User, ...args: string[]): Promise<void> {
-    if (args.length !== 1) {
-    throw new Error(`usage: ${cmdName} <url>`);
-    }
-    const url = args[0];
-
-    const feed = await getFeedByUrl(url);
-    if (!feed) {
-    throw new Error(`no feed found with url: ${url}`);
-    }
-
-    const feedFollow = await createFeedFollow(user.id, feed.id);
-    console.log(`${feedFollow.userName} is now following ${feedFollow.feedName}`);
-}
-
-export async function handlerGetAllFollowsForUser(cmdName: string, user: User, ...args: string[]): Promise<void> {
-    const follows = await getFeedFollowsForUser(user.id);
-    for (const f of follows) {
-    console.log(f.feedName);
-}
-}
-
-export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
-    if (args.length !== 1) {
-    throw new Error(`usage: ${cmdName} <feed_url>`);
-    }
-
-    const url = args[0];
-    const deleted = await deleteFeedFollow(user.id, url);
-
-    if (!deleted) {
-    throw new Error(`${user.name} isn't following ${url}`);
-    }
-
-    console.log(`${user.name} unfollowed ${url}`);
 }
 
 export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
