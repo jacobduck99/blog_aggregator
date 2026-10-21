@@ -21,6 +21,11 @@ import {
     handlerAgg
 } from './commands/feeds.ts'
 
+import {
+    createPost,
+    getPostsForUser,
+} from './lib/db/queries/posts.ts'
+
 import { getUsers } from '../src/lib/db/queries/users.ts'
 
 async function main() {
@@ -30,7 +35,7 @@ async function main() {
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerAgg);
-    // CHANGE BACK TO HANDLER FETCHURL JUST TESTING THINGS
+    await registerCommand(commandRegistry, "browse", getPostsForUser); 
     await registerCommand(commandRegistry, "addfeed", middlewareLoggedIn(handlerCreateFeed));
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
     await registerCommand(commandRegistry, "follow", middlewareLoggedIn(handlerCreateFeedFollow));
