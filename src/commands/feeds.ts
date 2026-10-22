@@ -2,6 +2,7 @@ import { getFeeds, createFeed, markFeedFetched, getNextFeedToFetch } from '../li
 import { createFeedFollow } from '../lib/db/queries/feed_follows.ts'
 import type { User, Feed } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
+import { createPost } from '../lib/db/queries/posts.ts'
 
 export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
     if (args.length !== 2) {
@@ -37,12 +38,26 @@ export async function scrapeFeeds() {
 
     await markFeedFetched(feed.id);
     const rss = await fetchFeed(feed.url);
+    for (const r of rss.channel.item){
+        const title = r.title;
+        const url = r.link;
+        const feedId = feed.id;
+        const description = r.description;
+        const publishedAt = r.pubDate;
+        // console.log("title", title)
+        // console.log("url", url)
+        // console.log("feedId", feedId)
+        // console.log("description", description)
+        // console.log("published at", publishedAt)
+        const stringToDate = new Date(publishedAt);
+        // console.log("here is st5ring to date", stringToDate);
+        // console.log("title", title)
+        createPost(title, url, feedId, description, stringToDate);
+        console.log("r rss", title)
 
-    console.log(`Fetched ${feed.name}:`);
-    for (const item of rss.channel.item) {
-        console.log(`* ${item.title}`);
     }
-}
+
+    }
 
 export function parseDuration(durationStr: string): number {
     const regex = /^(\d+)(ms|s|m|h)$/;

@@ -16,12 +16,12 @@ export async function createPost(title: string, url: string, feedId: string, des
     return result;
 }
 
-export async function getPostsForUser(cmd: string, numberOfPosts: number){
+export async function getPostsForUser(cmd: string, numberOfPosts?: number){
     const num = Number(numberOfPosts);
-    console.log("num", num)
     const result = await db.select().from(posts).orderBy(desc(posts.createdAt)).limit(num);
 
     console.log("get post for users", result)
+    return result;
 
 }
 
