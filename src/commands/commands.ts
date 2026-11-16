@@ -1,6 +1,7 @@
 import { setUser, readConfig } from '../config.ts'
 import { exit } from 'node:process';
 import { createUser, getUser, deleteUsers, getUsers } from '../lib/db/queries/users.ts'
+import type { User } from '../lib/db/queries/users.ts'
 
 import { createFeedFollow, getFeedFollowsForUser } from '../lib/db/queries/feed_follows.ts'
 
@@ -63,12 +64,10 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
 }
 
 export async function handlerReset(): Promise<void>{
-    const resetDb = await deleteUsers();
-    if (!resetDb){
-        process.exit(0);
-    }else {
-        process.exit(1);
-    }
+    // throws on failure, which index.ts reports and exits with code 1
+    await deleteUsers();
+    console.log("Database reset: all users deleted");
+    process.exit(0);
 
 }
 

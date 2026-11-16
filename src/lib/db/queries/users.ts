@@ -1,65 +1,24 @@
 import { db } from "../index.ts";
-import { users, feeds, feed_follows } from "../../../schema.ts";
-import { eq, and } from "drizzle-orm";
+import { users, feeds } from "../../../schema.ts";
+import { eq } from "drizzle-orm";
 
-export type user = typeof users.$inferselect;
-export type feed = typeof feeds.$inferselect;
+export type User = typeof users.$inferSelect;
+export type Feed = typeof feeds.$inferSelect;
 
-type usercommandhandler = (
-    cmdname: string,
-    user: user,
-    ...args: string[]
-) => promise<void>;
-
-export async function createUser(name: string): promise<string[]>{
+export async function createUser(name: string): Promise<User> {
     const [result] = await db.insert(users).values({ name: name }).returning();
     return result;
 }
 
-export async function getUser(name: string): promise<string[]>{
+export async function getUser(name: string): Promise<User | undefined> {
     const [result] = await db.select().from(users).where(eq(users.name, name));
     return result;
 }
 
-export async function deleteUsers(): promise<string[]>{
-    const [result] = await db.delete(users);
-    return result;
+export async function deleteUsers(): Promise<void> {
+    await db.delete(users);
 }
 
-export async function getUsers(): promise<string[]>{
-    const result = await db.select().from(users);
-    return result;
+export async function getUsers(): Promise<User[]> {
+    return await db.select().from(users);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

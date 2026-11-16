@@ -5,12 +5,8 @@ import {
 
 from '../lib/db/queries/feed_follows.ts'
 
-import { 
-    createFeed, 
-    getFeedByUrl, 
-    printFeed } 
-
-from '../lib/db/queries/feeds.ts'
+import { getFeedByUrl } from '../lib/db/queries/feeds.ts'
+import type { User } from '../lib/db/queries/users.ts'
 
 export async function handlerCreateFeedFollow(cmdName: string, user: User, ...args: string[]): Promise<void> {
     if (args.length !== 1) {

@@ -1,8 +1,9 @@
 import { db } from "../index.ts";
 import { eq, sql } from "drizzle-orm";
-import { users, feeds, feed_follows } from "../../../schema.ts";
+import { users, feeds } from "../../../schema.ts";
+import type { Feed } from "./users.ts";
 
-export async function createFeed(name: string, url: string, user_id: string): Promise<String[]>{
+export async function createFeed(name: string, url: string, user_id: string): Promise<Feed> {
     const [result] = await db.insert(feeds).values({ name: name, url: url, user_id: user_id }).returning();
     return result;
 }
@@ -21,13 +22,6 @@ export async function getFeeds(): Promise<void> {
 export async function getFeedByUrl(url: string) {
     const [result] = await db.select().from(feeds).where(eq(feeds.url, url));
     return result;
-}
-
-export async function getUserFeeds(): Promise<string>{
-    const [userFeed] = await db.select().from(feeds);
-    console.log("here's user feed", userFeed);
-    return userFeed;
-
 }
 
 export async function markFeedFetched(feedId: string) {
