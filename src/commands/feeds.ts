@@ -52,8 +52,8 @@ export async function scrapeFeeds() {
         const stringToDate = new Date(publishedAt);
         // console.log("here is st5ring to date", stringToDate);
         // console.log("title", title)
-        createPost(title, url, feedId, description, stringToDate);
-        console.log("r rss", title)
+        const saved = await createPost(title, url, feedId, description, stringToDate);
+        if (saved) console.log(`Saved post: ${title}`);
 
     }
 

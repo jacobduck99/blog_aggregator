@@ -10,10 +10,12 @@ export async function createPost(title: string, url: string, feedId: string, des
         description: description,
         publishedAt: publishedAt,
 
-    }).returning();
+    })
+    // post URLs are unique: re-scraping a feed skips posts we already have
+    .onConflictDoNothing({ target: posts.url })
+    .returning();
 
-    console.log("here is createPost", result);
-    return result;
+    return result; // undefined if the post was already saved
 }
 
 export async function getPostsForUser(cmd: string, numberOfPosts?: number){
