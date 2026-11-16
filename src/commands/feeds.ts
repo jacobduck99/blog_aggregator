@@ -2,7 +2,7 @@ import { getFeeds, createFeed, markFeedFetched, getNextFeedToFetch } from '../li
 import { createFeedFollow } from '../lib/db/queries/feed_follows.ts'
 import type { User, Feed } from '../lib/db/queries/users.ts'
 import { fetchFeed } from '../lib/rss.ts'
-import { createPost } from '../lib/db/queries/posts.ts'
+import { createPost, getPostsForUser } from '../lib/db/queries/posts.ts'
 
 export async function handlerCreateFeed(cmdName: string, user: User, ...args: string[]): Promise<void> {
     if (args.length !== 2) {
@@ -114,4 +114,27 @@ export async function handlerAgg(cmdName: string, ...args: string[]): Promise<vo
             resolve();
         });
     });
+}
+
+const DEFAULT_BROWSE_LIMIT = 2;
+
+export async function handlerBrowse(cmdName: string, user: User, ...args: string[]): Promise<void> {
+    if (args.length > 1) {
+        throw new Error(`usage: ${cmdName} [limit]`);
+    }
+    const limit = args.length ? Number(args[0]) : DEFAULT_BROWSE_LIMIT;
+    if (!Number.isInteger(limit) || limit < 1) {
+        throw new Error(`limit must be a positive whole number, got "${args[0]}"`);
+    }
+
+    const posts = await getPostsForUser(user.id, limit);
+    if (posts.length === 0) {
+        console.log("No posts yet. Follow some feeds and run `agg` to fetch them.");
+        return;
+    }
+    for (const post of posts) {
+        console.log(`\n${post.title}`);
+        console.log(`  ${post.feedName} | ${post.publishedAt?.toDateString() ?? "unknown date"}`);
+        console.log(`  ${post.url}`);
+    }
 }

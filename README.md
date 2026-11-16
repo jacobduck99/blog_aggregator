@@ -5,7 +5,7 @@ A command-line RSS feed aggregator written in TypeScript. Register users, add an
 ## How It Works
 
 - **Multi-user:** users, feeds and follows live in Postgres. The current user is stored in a config file, so commands act as whoever is logged in.
-- **Login-guarded commands:** commands that need a user (`addfeed`, `follow`, `following`, `unfollow`) are wrapped in a `middlewareLoggedIn` higher-order function, so the login check is written once instead of in every handler.
+- **Login-guarded commands:** commands that need a user (`addfeed`, `follow`, `following`, `unfollow`, `browse`) are wrapped in a `middlewareLoggedIn` higher-order function, so the login check is written once instead of in every handler.
 - **Fair scraping:** `agg` runs on an interval and each tick fetches the feed that was fetched *longest ago* (never-fetched feeds first, `ORDER BY last_fetched_at ASC NULLS FIRST`). Every feed gets its turn, and no site is hammered.
 - **Safe RSS parsing:** feeds are parsed with `fast-xml-parser` and each item is type-checked before it's saved, so a malformed feed is skipped instead of crashing the aggregator. Post URLs are unique, so re-scraping a feed doesn't create duplicates.
 - **Type-safe database:** Drizzle ORM schema with versioned SQL migrations.
@@ -73,7 +73,7 @@ npm run start <command> [args...]
 | `following` | List the feeds the current user follows (requires login) |
 | `unfollow <url>` | Unfollow a feed (requires login) |
 | `agg <interval>` | Continuously scrape feeds, e.g. `agg 30s`, `agg 1m`. Stop with Ctrl+C |
-| `browse <limit>` | Show the `<limit>` most recent posts |
+| `browse [limit]` | Show the newest posts from feeds you follow (default 2) (requires login) |
 | `reset` | Delete all users (and their data). Use with care |
 
 ### Example session
@@ -101,6 +101,12 @@ src/
 ```
 
 ## Development
+
+Type-check the project (the app runs through `tsx`, which doesn't type-check):
+
+```bash
+npm run typecheck
+```
 
 After changing `src/schema.ts`, generate and apply a migration:
 

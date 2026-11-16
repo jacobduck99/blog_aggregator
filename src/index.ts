@@ -18,15 +18,9 @@ import {
 import { 
     handlerCreateFeed,
     handlerGetAllFeeds, 
-    handlerAgg
+    handlerAgg,
+    handlerBrowse
 } from './commands/feeds.ts'
-
-import {
-    createPost,
-    getPostsForUser,
-} from './lib/db/queries/posts.ts'
-
-import { getUsers } from '../src/lib/db/queries/users.ts'
 
 async function main() {
     const commandRegistry: CommandsRegistry = {};
@@ -35,7 +29,7 @@ async function main() {
     await registerCommand(commandRegistry, "reset", handlerReset);
     await registerCommand(commandRegistry, "users", handlerGetUsers);
     await registerCommand(commandRegistry, "agg", handlerAgg);
-    await registerCommand(commandRegistry, "browse", getPostsForUser); 
+    await registerCommand(commandRegistry, "browse", middlewareLoggedIn(handlerBrowse));
     await registerCommand(commandRegistry, "addfeed", middlewareLoggedIn(handlerCreateFeed));
     await registerCommand(commandRegistry, "feeds", handlerGetAllFeeds);
     await registerCommand(commandRegistry, "follow", middlewareLoggedIn(handlerCreateFeedFollow));
